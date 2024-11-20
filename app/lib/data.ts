@@ -31,7 +31,9 @@ export async function fetchRevenue(): Promise<Array<Revenue>> {
   }
 }
 
-export async function fetchLatestInvoices(): Promise<Array<LatestInvoiceRaw | unknown>> {
+export async function fetchLatestInvoices(): Promise<
+  Array<LatestInvoiceRaw | unknown>
+> {
   try {
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
