@@ -9,7 +9,7 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-export async function fetchRevenue() {
+export async function fetchRevenue(): Promise<Array<Revenue>> {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
@@ -20,15 +20,18 @@ export async function fetchRevenue() {
     const data = await sql<Revenue>`SELECT * FROM revenue`;
 
     // console.log('Data fetch completed after 3 seconds.');
-
-    return data.rows;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(data.rows);
+      }, 3000);
+    });
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchLatestInvoices(): Promise<Array<LatestInvoiceRaw | unknown>> {
   try {
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -41,7 +44,11 @@ export async function fetchLatestInvoices() {
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
-    return latestInvoices;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(latestInvoices || []);
+      }, 3000);
+    });
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the latest invoices.');
